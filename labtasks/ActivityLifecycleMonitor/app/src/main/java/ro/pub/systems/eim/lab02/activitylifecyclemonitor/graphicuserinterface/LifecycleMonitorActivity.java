@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -62,7 +63,81 @@ public class LifecycleMonitorActivity extends AppCompatActivity {
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
 
-        Log.d(Constants.TAG, "onCreate() method was invoked without a previous state");
+        if(savedInstanceState == null) {
+            Log.d(Constants.TAG, "No previous state");
+        }
+        else {
+            Log.d(Constants.TAG, "Previous state found");
+        }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(Constants.TAG, "onRestart was invoked");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(Constants.TAG, "onStart was invoked");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(Constants.TAG, "onResume was invoked");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(Constants.TAG, "onPause was invoked");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(Constants.TAG, "onStop was invoked");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constants.TAG, "onDestroy was invoked");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceData) {
+        super.onSaveInstanceState(savedInstanceData);
+
+        CheckBox cb = (CheckBox) findViewById(R.id.remember_me_checkbox);
+
+        if(cb.isChecked()) {
+            EditText username = (EditText) findViewById(R.id.username_edit_text);
+            EditText password = (EditText) findViewById(R.id.password_edit_text);
+
+            savedInstanceData.putString(Constants.USERNAME_TAG, username.getText().toString());
+            savedInstanceData.putString(Constants.PASSWORD_TAG, password.getText().toString());
+            savedInstanceData.putBoolean("checkbox", true);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceData) {
+
+        Log.d(Constants.TAG, "Restore bundle was called");
+
+        String savedUsername = savedInstanceData.getString(Constants.USERNAME_TAG);
+        String savedPassword = savedInstanceData.getString(Constants.PASSWORD_TAG);
+        Boolean savedCB = savedInstanceData.getBoolean("checkbox");
+
+        EditText username = (EditText) findViewById(R.id.username_edit_text);
+        EditText password = (EditText) findViewById(R.id.password_edit_text);
+        CheckBox cb = (CheckBox) findViewById(R.id.remember_me_checkbox);
+
+        cb.setChecked(savedCB);
+        username.setText(savedUsername);
+        password.setText(savedPassword);
+    }
 }
